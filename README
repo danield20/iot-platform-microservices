@@ -1,0 +1,1 @@
+docker run --name mqtt --restart=on-failure -p 1883:1883 -tid -v config:/mqtt/config:ro -v log:/mqtt/log -v data:/mqtt/data/ eclipse-mosquittoe

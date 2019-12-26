@@ -1,0 +1,61 @@
+version: '3'
+
+services:
+
+  mqtt:
+    image: eclipse-mosquitto
+    container_name: mqtt
+    restart: always
+    networks:
+      - mqtt_network
+    ports:
+      - "1883:1883"
+    volumes:
+        - ./mosquitto/mosquitto.conf:/mosquitto/config/mosquitto.conf
+
+  influxdb:
+    image: influxdb:latest
+    container_name: influxdb
+    networks:
+      - influxdb_network
+      - grafana_network
+    volumes:
+      - db_data:/var/lib/influxdb
+      - ./influxdb/config/influxdb.conf:/etc/influxdb/influxdb.conf
+
+  adaptor:
+    build:
+        context: ./mqtt_adaptor
+    image: mqtt_adaptor
+    environment:
+      - DEBUG_DATA_FLOW=True
+    volumes:
+      - ./mqtt_adaptor/src:/app
+    networks:
+      - influxdb_network
+      - mqtt_network
+    depends_on:
+      - mqtt
+      - influxdb
+    stdin_open: true
+
+  grafana:
+    image: grafana/grafana:latest
+    container_name: grafana
+    ports:
+      - "80:3000"
+    networks:
+      - grafana_network
+    depends_on:
+      - influxdb
+    volumes:
+      - grafana_data:/var/lib/grafana
+
+volumes:
+  db_data: {}
+  grafana_data: {}
+
+networks:
+  mqtt_network:
+  influxdb_network:
+  grafana_network:
