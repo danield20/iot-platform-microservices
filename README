@@ -1,1 +1,30 @@
-docker run --name mqtt --restart=on-failure -p 1883:1883 -tid -v config:/mqtt/config:ro -v log:/mqtt/log -v data:/mqtt/data/ eclipse-mosquittoe
+In primul rand as vrea sa spun ca aceasta tema mi s-a parut interesanta deoarece am reusit sa invat
+cateva lucruri noi despre modurile de lucru din industrie. In continuare o sa detaliez pe scurt detaliile
+de implementare.
+
+Pentru realizarea temei am folosit 4 containere, unul pentru brokerul mqtt, unul pentru baza de date
+influxdb, unul pentru adaptor si unul pentru grafana.
+
+In ceea ce priveste brokerul mqtt, am folosit fisierul de configurare mosquitto.conf pentru a seta
+optiunile specificate in cerinta, iar in rest este imaginea default.
+
+Pentru baza de date influxdb, asemanator cu brokerul mqtt, am folosit fisierul de configurare
+influxdb.conf pentru a seta specificatiile cerute in cerinta.
+
+In ceea ce priveste adaptorul, aici este singurul loc unde am scirs cod. Am realizat conectarea
+la baza de date si la brokerul mqtt. Urmatorul pas a fost ca la primirea unui mesaj, daca mesajul este
+unul valid, sa se parseze subiectul si payloadul si sa se introduca datele in baza de date. Datele sunt
+introduse intr-o baza de date care se numeste iot_devices (aceasta baza de date este creata daca ea
+nu exista in prealabil). In campul measurement este introdusa marimea masurata curent (BAT, HUM, etc),
+in campul tags este introdusa locatia si numele device-ului iar in campul fields valoarea masurata.
+Adaptorul printeaza la stdout informatii despre operatiile facute atunci cand variabila DEBUG_DATA_FLOW
+este setata la True.
+
+Pentru interfata grafica, am folosit grafana. Pentru a realiza prezenta persisteta a dashbord-urilor
+si a sursei de date am creat volumul grafana/provisioning unde se afla fisiere yaml si json care descriu
+atat sursa de date cat si dashbord-urile. Pentru setarea utilizatorului cerut am folosit variabile de mediu.
+
+In ceea ce priveste networking-ul am folosit 3 retele: mqtt_network, influxdb_network, grafana_network.
+Astfel brokerul mqtt poate comunica doar cu adaptorul, baza de data poate comunica doar cu adaptorul
+si cu grafana, iar adaptorul doar cu baza de date si cu brokerul mqtt.
+

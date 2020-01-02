@@ -42,6 +42,9 @@ services:
   grafana:
     image: grafana/grafana:latest
     container_name: grafana
+    environment:
+      - GF_SECURITY_ADMIN_USER=asistent
+      - GF_SECURITY_ADMIN_PASSWORD=grafanaSPRC2019
     ports:
       - "80:3000"
     networks:
@@ -49,11 +52,10 @@ services:
     depends_on:
       - influxdb
     volumes:
-      - grafana_data:/var/lib/grafana
+      - ./grafana/provisioning:/etc/grafana/provisioning
 
 volumes:
   db_data: {}
-  grafana_data: {}
 
 networks:
   mqtt_network:
