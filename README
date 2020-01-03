@@ -28,3 +28,14 @@ In ceea ce priveste networking-ul am folosit 3 retele: mqtt_network, influxdb_ne
 Astfel brokerul mqtt poate comunica doar cu adaptorul, baza de data poate comunica doar cu adaptorul
 si cu grafana, iar adaptorul doar cu baza de date si cu brokerul mqtt.
 
+Scriptul run.sh:
+
+    Se presupune ca masina face parte deja din swarm.
+
+    Daca scriptul este rulat fara nici un parametru atunci el construieste imaginile, porneste serviciul
+registry, porneste stack-ul. Daca optiunea -v este data, atunci volumul pentru baza de date este sters
+la pornire, incepand de la o baza de date fara nimic in ea.
+
+    Daca stack-ul este pornit, atunci optiunea -s opreste si sterge stack-ul si serviciul registry.
+
+DANIEL DINCA, 343C3

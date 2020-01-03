@@ -17,17 +17,17 @@ client = mqtt.Client()
 client.on_connect = on_connect
 client.on_message = on_message
 
-client.connect("localhost", 1883, 60)
+client.connect("127.0.0.1", 1883, 60)
 
 client.loop_start()
 input()
 for i in range(5):
-    x = '{{ "BAT":{}, "HUMID":{}, "PRJ":"SPRC", "TMP":{}, "status":"OK"}}'.format(i*10+5, i*10+4, i*10+3.5)
+    x = '{{ "BAT":{}, "HUMID":{}, "PRJ":"SPRC", "TMP":{}, "status":"OK"}}'.format(i*10+5, i*50+4, i*100+3.5)
     client.publish("UPB/RPi_1", qos=2, payload=x)
     time.sleep(1)
 
 for i in range(5):
-    x = '{{ "BAT":{}, "HUMID":{}, "PRJ":"SPRC", "TMP":{}, "status":"OK"}}'.format(i*20+5, i*20+4, i*20+3.5)
+    x = '{{ "BAT":{}, "HUMID":{}, "PRJ":"SPRC", "TMP":{}, "status":"OK"}}'.format(i*20+5, i*100+4, i*150+3.5)
     client.publish("UPB/RPi_2", qos=2, payload=x)
     time.sleep(1)
 

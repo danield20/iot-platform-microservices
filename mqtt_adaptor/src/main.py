@@ -100,7 +100,7 @@ def main():
     global printing
     if "DEBUG_DATA_FLOW" in os.environ:
         printing = (os.environ["DEBUG_DATA_FLOW"] == "True")
-    time.sleep(5)
+    time.sleep(20)
     connect_to_db()
     connect_to_mqtt()
 
